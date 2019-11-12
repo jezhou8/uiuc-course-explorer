@@ -1,7 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import CourseView from "./components/Courses";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import TabNavigator from "./components/Navigator/TabNavigator";
 
 export default function App() {
-	return <CourseView></CourseView>;
+	return (
+		<Provider store={store}>
+			<TabNavigator></TabNavigator>
+		</Provider>
+	);
 }
