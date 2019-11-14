@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ListView, ScrollView } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { getStatusBarHeight } from "react-native-safe-area-view";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -22,7 +23,7 @@ export default class CoursesView extends React.Component {
 			search,
 			searchDelay: setTimeout(() => {
 				this.setState(
-					{ ...this.state, courses: [] },
+					{ ...this.state, numCourses: 0, courses: [] },
 					this._getCourses(search)
 				);
 			}, 300),
@@ -30,36 +31,32 @@ export default class CoursesView extends React.Component {
 	};
 
 	_listBuilder = () => {
-		console.log(this.state.courses.length);
-		const courseTitles = {};
-		const uniqueCourses = [];
-		for (let i = 0; i < this.state.courses.length; i++) {
-			let course = this.state.courses[i];
-			if (!(course["Course Title"] in courseTitles)) {
-				courseTitles[course["Course Title"]] = true;
-				uniqueCourses.push(course);
-			}
-		}
-
 		return this.state.courses.map((course, index) => {
 			return (
 				<TouchableOpacity
-					style={{ backgroundColor: "#f00" }}
+					style={styles.courseItemContainer}
 					key={index}
-					onPress={() =>
+					onPress={() => {
 						this.props.getCurrentCourse(
 							course["Subject"],
 							course["Number"]
-						)
-					}
+						);
+						this.props.navigation.navigate("Track");
+					}}
 				>
-					<Text style={styles.itemtext}>
-						{course["Subject"] +
-							" " +
-							course["Number"] +
-							": " +
-							course["Course Title"]}
-					</Text>
+					<View>
+						<Text style={styles.itemtext}>
+							{course["Subject"] +
+								" " +
+								course["Number"] +
+								": " +
+								course["CourseTitle"]}
+						</Text>
+
+						<Text>
+							{"Average GPA: " + course["AverageGPA"].toFixed(2)}
+						</Text>
+					</View>
 				</TouchableOpacity>
 			);
 		});
@@ -76,6 +73,11 @@ export default class CoursesView extends React.Component {
 			let courseNumber = search.match(/\d/g);
 			if (courseNumber != null) {
 				courseNumber = parseInt(courseNumber.join(""));
+				if (courseNumber < 10) {
+					courseNumber *= 100;
+				} else if (courseNumber < 50) {
+					courseNumber *= 10;
+				}
 			} else {
 				courseNumber = 0;
 			}
@@ -83,16 +85,17 @@ export default class CoursesView extends React.Component {
 			const ref = firestore.collection("courses");
 			ref.where("Subject", "==", courseTitle)
 				.where("Number", ">=", courseNumber)
-				.limit(50)
+				.limit(20)
 				.get()
 				.then(querySnapshot => {
 					querySnapshot.forEach(doc => {
 						let courseInfo = doc.data();
 						this.state.courses.push(courseInfo);
-						this.setState({
-							...this.state,
-							numCourses: this.state.numCourses + 1,
-						});
+					});
+
+					this.setState({
+						...this.state,
+						numCourses: 20,
 					});
 				});
 		}
@@ -110,8 +113,8 @@ export default class CoursesView extends React.Component {
 					containerStyle={{ width: "100%" }}
 					value={search}
 				/>
-				<ScrollView>
-					{this.state.numCourses > 0 && this._listBuilder()}
+				<ScrollView style={{ width: "100%" }}>
+					{this.state.numCourses == 20 && this._listBuilder()}
 				</ScrollView>
 			</View>
 		);
@@ -121,8 +124,15 @@ export default class CoursesView extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width: "100%",
+		top: getStatusBarHeight(),
 		backgroundColor: "#ddd",
 		alignItems: "center",
+	},
+	courseItemContainer: {
+		width: "95%",
+		margin: "2%",
+		backgroundColor: "#0f0",
 	},
 	itemtext: {
 		fontSize: 16,
