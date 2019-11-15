@@ -1,14 +1,14 @@
 export function getColorByGPA(gpa) {
 	if (gpa >= 3.5) {
-		return "#00C764";
+		return { backgroundColor: "#00C764", textColor: "#0E8E0E" };
 	} else if (gpa >= 3.0) {
-		return "#CFD101";
+		return { backgroundColor: "#CFD101", textColor: "#919200" };
 	} else if (gpa >= 2.5) {
-		return "#FFC759";
+		return { backgroundColor: "#FFC759", textColor: "#F2A000" };
 	} else if (gpa >= 2.0) {
-		return "#FFA02B";
+		return { backgroundColor: "#FFA02B", textColor: "#FFF" };
 	} else if (gpa >= 1.0) {
-		return "#FF2B06";
+		return { backgroundColor: "#FF2B06", textColor: "#FFF" };
 	}
 }
 

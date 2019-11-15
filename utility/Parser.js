@@ -42,6 +42,7 @@ export function parseJsonFromXml(courseXml) {
 			});
 		}
 	}
+
 	let sections = courseJson["detailedSections"]["detailedSection"];
 
 	sections.forEach(section => {

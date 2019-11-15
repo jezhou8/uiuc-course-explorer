@@ -1,18 +1,30 @@
 import React from "react";
-import { StyleSheet, Text, View, ListView, ScrollView } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	ListView,
+	ScrollView,
+	Dimensions,
+} from "react-native";
 import { SearchBar } from "react-native-elements";
+import Overlay from "react-native-modal-overlay";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-safe-area-view";
 import { getColorByGPA } from "../../utility/Colors";
+import { Row, Col } from "react-native-easy-grid";
+import { createKeyboardAwareNavigator } from "react-navigation";
+import { LineChart } from "react-native-chart-kit";
 
 export default class CoursesView extends React.Component {
 	state = {
 		search: "",
 		courses: [],
-		uniqueCourses: [],
 		numCourses: 0,
 		searchDelay: 0,
+		displayedCourse: {},
+		overlayIsVisible: false,
 	};
 
 	updateSearch = search => {
@@ -33,6 +45,7 @@ export default class CoursesView extends React.Component {
 
 	_listBuilder = () => {
 		return this.state.courses.map((course, index) => {
+			gpaColors = getColorByGPA(course["AverageGPA"]);
 			return (
 				<TouchableOpacity
 					style={styles.courseItemContainer}
@@ -42,28 +55,44 @@ export default class CoursesView extends React.Component {
 							course["Subject"],
 							course["Number"]
 						);
-						this.props.navigation.navigate("Track");
+						//this.props.navigation.navigate("Track");
+						this.setState({
+							...this.state,
+							displayedCourse: course,
+							overlayIsVisible: true,
+						});
 					}}
 				>
-					<View>
-						<Text style={styles.itemText}>
-							{course["Subject"] +
-								" " +
-								course["Number"] +
-								": " +
-								course["CourseTitle"]}
-						</Text>
-
+					<View style={styles.courseDetailsContainer}>
 						<View
 							style={{
-								backgroundColor: getColorByGPA(
-									course["AverageGPA"]
-								),
+								flex: 1,
+								flexDirection: "column",
+								justifyContent: "center",
 							}}
 						>
-							<Text>
-								{"Average GPA: " +
-									course["AverageGPA"].toFixed(2)}
+							<View>
+								<Text style={styles.courseSubjectNumberText}>
+									{course["Subject"] + " " + course["Number"]}
+								</Text>
+								<Text style={styles.courseTitleText}>
+									{course["CourseTitle"]}
+								</Text>
+							</View>
+						</View>
+						<View
+							style={{
+								...styles.gpaContainer,
+								backgroundColor: gpaColors["backgroundColor"],
+							}}
+						>
+							<Text
+								style={{
+									...styles.averageGPAText,
+									color: gpaColors["textColor"],
+								}}
+							>
+								{course["AverageGPA"].toFixed(2)}
 							</Text>
 						</View>
 					</View>
@@ -100,7 +129,7 @@ export default class CoursesView extends React.Component {
 
 				ref.where("Subject", "==", courseTitle)
 					.where("Number", ">=", courseNumber)
-					.limit(20)
+					.limit(10)
 					.get()
 					.then(querySnapshot => {
 						querySnapshot.forEach(doc => {
@@ -156,7 +185,74 @@ export default class CoursesView extends React.Component {
 
 		return (
 			<View style={styles.container}>
+				<Overlay
+					visible={this.state.overlayIsVisible}
+					animationDuration={100}
+					onClose={() =>
+						this.setState({
+							...this.state,
+							overlayIsVisible: false,
+						})
+					}
+					containerStyle={{
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+					childrenWrapperStyle={{ width: "95%", height: "90%" }}
+					closeOnTouchOutside
+				>
+					<LineChart
+						data={{
+							labels: [
+								"January",
+								"February",
+								"March",
+								"April",
+								"May",
+								"June",
+							],
+							datasets: [
+								{
+									data: [
+										Math.random() * 100,
+										Math.random() * 100,
+										Math.random() * 100,
+										Math.random() * 100,
+										Math.random() * 100,
+										Math.random() * 100,
+									],
+								},
+							],
+						}}
+						width={300} // from react-native
+						height={150}
+						yAxisLabel={"$"}
+						chartConfig={{
+							backgroundColor: "#fff",
+							decimalPlaces: 2, // optional, defaults to 2dp
+							color: (opacity = 1) =>
+								`rgba(255, 255, 255, ${opacity})`,
+							labelColor: (opacity = 1) =>
+								`rgba(255, 255, 255, ${opacity})`,
+							style: {
+								borderRadius: 5,
+							},
+							propsForDots: {
+								r: "6",
+								strokeWidth: "2",
+								stroke: "#ffa726",
+							},
+						}}
+						bezier
+						style={{
+							marginVertical: 8,
+							borderRadius: 5,
+						}}
+					/>
+				</Overlay>
+
 				<SearchBar
+					lightTheme
 					placeholder="Search For courses.."
 					onChangeText={this.updateSearch}
 					containerStyle={{ width: "100%" }}
@@ -176,18 +272,43 @@ export default class CoursesView extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	averageGPAText: {
+		fontSize: 30,
+		fontWeight: "bold",
+	},
 	container: {
 		width: "100%",
 		height: "100%",
 		top: getStatusBarHeight(),
-		backgroundColor: "#ddd",
-		alignItems: "center",
+		backgroundColor: "#fff",
+		//alignItems: "center",
+	},
+	courseDetailsContainer: {
+		width: "100%",
+		height: "100%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+
+		paddingLeft: 10,
 	},
 	courseItemContainer: {
 		width: "100%",
-		height: 50,
-		marginTop: "2%",
-		marginBottom: "2%",
-		borderRadius: 12,
+		backgroundColor: "#fff",
+		height: 70,
+	},
+	gpaContainer: {
+		alignItems: "center",
+		justifyContent: "center",
+		aspectRatio: 1,
+		height: "100%",
+	},
+	courseSubjectNumberText: {
+		color: "#707070",
+		fontWeight: "bold",
+		fontSize: 20,
+	},
+	courseTitleText: {
+		color: "#707070",
+		fontSize: 18,
 	},
 });
