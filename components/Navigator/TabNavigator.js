@@ -7,6 +7,7 @@ import CourseInfo from "../CourseInfo";
 
 const TabNavigator = createBottomTabNavigator({
 	Courses: CourseScreen,
+	Browse: CourseInfo,
 	Track: CourseInfo,
 });
 

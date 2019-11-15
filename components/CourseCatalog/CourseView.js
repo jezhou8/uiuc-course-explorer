@@ -4,6 +4,7 @@ import { SearchBar } from "react-native-elements";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-safe-area-view";
+import { getColorByGPA } from "../shared/Colors";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -44,7 +45,7 @@ export default class CoursesView extends React.Component {
 						this.props.navigation.navigate("Track");
 					}}
 				>
-					<View>
+					<View style={{ borderRadius: 12 }}>
 						<Text style={styles.itemtext}>
 							{course["Subject"] +
 								" " +
@@ -53,9 +54,18 @@ export default class CoursesView extends React.Component {
 								course["CourseTitle"]}
 						</Text>
 
-						<Text>
-							{"Average GPA: " + course["AverageGPA"].toFixed(2)}
-						</Text>
+						<View
+							style={{
+								backgroundColor: getColorByGPA(
+									course["AverageGPA"]
+								),
+							}}
+						>
+							<Text>
+								{"Average GPA: " +
+									course["AverageGPA"].toFixed(2)}
+							</Text>
+						</View>
 					</View>
 				</TouchableOpacity>
 			);
@@ -64,10 +74,8 @@ export default class CoursesView extends React.Component {
 
 	_getCourses = search => {
 		if (search != null) {
-			let courseTitle = search.replace(/[^a-z]/gi, "");
-			if (courseTitle != null) {
-				courseTitle = courseTitle.toUpperCase();
-			} else {
+			let courseTitle = search.replace(/[^a-z|^]/gi, " ");
+			if (courseTitle == null) {
 				courseTitle = "";
 			}
 			let courseNumber = search.match(/\d/g);
@@ -83,21 +91,55 @@ export default class CoursesView extends React.Component {
 			}
 
 			const ref = firestore.collection("courses");
-			ref.where("Subject", "==", courseTitle)
-				.where("Number", ">=", courseNumber)
-				.limit(20)
-				.get()
-				.then(querySnapshot => {
-					querySnapshot.forEach(doc => {
-						let courseInfo = doc.data();
-						this.state.courses.push(courseInfo);
-					});
+			// if length of input is less than 5, search for subject, otherwise search course title
+			if (courseTitle.length < 5) {
+				courseTitle = courseTitle.replace(" ", "");
+				courseTitle = courseTitle.toUpperCase();
+				ref.where("Subject", "==", courseTitle)
+					.where("Number", ">=", courseNumber)
+					.limit(20)
+					.get()
+					.then(querySnapshot => {
+						querySnapshot.forEach(doc => {
+							let courseInfo = doc.data();
+							this.state.courses.push(courseInfo);
+						});
 
-					this.setState({
-						...this.state,
-						numCourses: 20,
+						this.setState({
+							...this.state,
+							numCourses: 20,
+						});
 					});
-				});
+			} else {
+				let temp_arr = courseTitle.split(" ");
+				for (let i = 0; i < temp_arr.length; i++) {
+					if (temp_arr[i].length < 4 && i != 0) {
+						temp_arr[i] = temp_arr[i].toLowerCase();
+						continue;
+					}
+					temp_arr[i] =
+						temp_arr[i].charAt(0).toUpperCase() +
+						temp_arr[i].slice(1).toLowerCase();
+				}
+				courseTitle = temp_arr.join(" ");
+				console.log(courseTitle);
+				let end_str = courseTitle + "\uf8ff";
+				ref.orderBy("CourseTitle")
+					.startAt(courseTitle)
+					.endAt(end_str)
+					.get()
+					.then(querySnapshot => {
+						querySnapshot.forEach(doc => {
+							let courseInfo = doc.data();
+							this.state.courses.push(courseInfo);
+						});
+
+						this.setState({
+							...this.state,
+							numCourses: 20,
+						});
+					});
+			}
 		}
 	};
 
@@ -131,8 +173,9 @@ const styles = StyleSheet.create({
 	},
 	courseItemContainer: {
 		width: "95%",
+		height: "10%",
 		margin: "2%",
-		backgroundColor: "#0f0",
+		borderRadius: 12,
 	},
 	itemtext: {
 		fontSize: 16,
