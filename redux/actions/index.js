@@ -13,12 +13,15 @@ const SEASON = "spring";
 
 export function getCourse(title, number) {
 	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
+	//const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/AAS/100.xml?mode=cascade`;
+
 	return dispatch => {
 		axios
 			.get(url)
 			.then(res => dispatch(getCourseSuccess(res.data)))
 			.catch(err => {
-				dispatch(getCourseFailure(err.message));
+				console.log(err.message);
+				dispatch(getCourseFailure(err.message, title, number));
 			});
 	};
 }
@@ -38,9 +41,11 @@ const getCourseStarted = () => ({
 	type: GET_CURRENT_COURSE_SUCCESS,
 });
 
-const getCourseFailure = error => ({
+const getCourseFailure = (error, subject, number) => ({
 	type: GET_CURRENT_COURSE_FAILED,
 	payload: {
 		error,
+		subject,
+		number,
 	},
 });

@@ -11,3 +11,11 @@ export function getColorByGPA(gpa) {
 		return "#FF2B06";
 	}
 }
+
+export function getColorByEnrollmentStatus(status) {
+	if (status == "Open") {
+		return "#0f0";
+	} else {
+		return "#f00";
+	}
+}

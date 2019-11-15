@@ -10,6 +10,8 @@ export default function cisReducer(state = INITIAL_STATE, action) {
 	switch (action.type) {
 		case GET_CURRENT_COURSE_SUCCESS:
 			return action.payload;
+		case GET_CURRENT_COURSE_FAILED:
+			return action.payload;
 		default:
 			return state;
 	}

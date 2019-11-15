@@ -46,7 +46,7 @@ export default class CoursesView extends React.Component {
 					}}
 				>
 					<View>
-						<Text style={styles.itemtext}>
+						<Text style={styles.itemText}>
 							{course["Subject"] +
 								" " +
 								course["Number"] +
@@ -162,7 +162,12 @@ export default class CoursesView extends React.Component {
 					containerStyle={{ width: "100%" }}
 					value={search}
 				/>
-				<ScrollView style={{ width: "100%" }}>
+				<ScrollView
+					style={{
+						width: "100%",
+						height: "100%",
+					}}
+				>
 					{this.state.numCourses == 20 && this._listBuilder()}
 				</ScrollView>
 			</View>
@@ -172,19 +177,17 @@ export default class CoursesView extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		width: "100%",
+		height: "100%",
 		top: getStatusBarHeight(),
 		backgroundColor: "#ddd",
 		alignItems: "center",
 	},
 	courseItemContainer: {
-		width: "95%",
-		height: "10%",
-		margin: "2%",
+		width: "100%",
+		height: 50,
+		marginTop: "2%",
+		marginBottom: "2%",
 		borderRadius: 12,
-	},
-	itemtext: {
-		fontSize: 16,
 	},
 });
