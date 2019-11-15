@@ -9,7 +9,6 @@ const INITIAL_STATE = {};
 export default function cisReducer(state = INITIAL_STATE, action) {
 	switch (action.type) {
 		case GET_CURRENT_COURSE_SUCCESS:
-			console.log(action.payload);
 			return action.payload;
 		default:
 			return state;

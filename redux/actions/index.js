@@ -6,12 +6,13 @@ import {
 
 import { parse } from "fast-xml-parser";
 import axios from "axios";
+import { parseJsonFromXml } from "../../utility/Parser";
 
 const YEAR = 2020;
 const SEASON = "spring";
 
 export function getCourse(title, number) {
-	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=summary`;
+	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
 	return dispatch => {
 		axios
 			.get(url)
@@ -23,7 +24,8 @@ export function getCourse(title, number) {
 }
 
 const getCourseSuccess = courseXml => {
-	let courseJson = parse(courseXml)["ns2:course"];
+	let courseJson = parseJsonFromXml(courseXml);
+
 	return {
 		type: GET_CURRENT_COURSE_SUCCESS,
 		payload: {

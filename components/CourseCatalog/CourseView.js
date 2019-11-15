@@ -4,7 +4,7 @@ import { SearchBar } from "react-native-elements";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-safe-area-view";
-import { getColorByGPA } from "../shared/Colors";
+import { getColorByGPA } from "../../utility/Colors";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -21,7 +21,7 @@ export default class CoursesView extends React.Component {
 		}
 		this.setState({
 			...this.state,
-			search,
+			search: search,
 			searchDelay: setTimeout(() => {
 				this.setState(
 					{ ...this.state, numCourses: 0, courses: [] },
@@ -45,7 +45,7 @@ export default class CoursesView extends React.Component {
 						this.props.navigation.navigate("Track");
 					}}
 				>
-					<View style={{ borderRadius: 12 }}>
+					<View>
 						<Text style={styles.itemtext}>
 							{course["Subject"] +
 								" " +
@@ -74,10 +74,11 @@ export default class CoursesView extends React.Component {
 
 	_getCourses = search => {
 		if (search != null) {
-			let courseTitle = search.replace(/[^a-z|^]/gi, " ");
+			let courseTitle = search.replace(/[^a-z|^ ]/gi, "");
 			if (courseTitle == null) {
 				courseTitle = "";
 			}
+
 			let courseNumber = search.match(/\d/g);
 			if (courseNumber != null) {
 				courseNumber = parseInt(courseNumber.join(""));
@@ -92,9 +93,11 @@ export default class CoursesView extends React.Component {
 
 			const ref = firestore.collection("courses");
 			// if length of input is less than 5, search for subject, otherwise search course title
-			if (courseTitle.length < 5) {
+			let courseTitleNoSpace = courseTitle.replace(" ", "");
+			if (courseTitleNoSpace.length < 5) {
 				courseTitle = courseTitle.replace(" ", "");
 				courseTitle = courseTitle.toUpperCase();
+
 				ref.where("Subject", "==", courseTitle)
 					.where("Number", ">=", courseNumber)
 					.limit(20)
@@ -102,7 +105,12 @@ export default class CoursesView extends React.Component {
 					.then(querySnapshot => {
 						querySnapshot.forEach(doc => {
 							let courseInfo = doc.data();
-							this.state.courses.push(courseInfo);
+							let tempcourses = this.state.courses;
+							tempcourses.push(courseInfo);
+							this.setState({
+								...this.state,
+								courses: tempcourses,
+							});
 						});
 
 						this.setState({
@@ -122,7 +130,6 @@ export default class CoursesView extends React.Component {
 						temp_arr[i].slice(1).toLowerCase();
 				}
 				courseTitle = temp_arr.join(" ");
-				console.log(courseTitle);
 				let end_str = courseTitle + "\uf8ff";
 				ref.orderBy("CourseTitle")
 					.startAt(courseTitle)
