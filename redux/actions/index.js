@@ -33,6 +33,7 @@ export function getCourse(title, number) {
 export function trackSection(section, user) {
 	return dispatch => {
 		const updatedSections = firestoreRef.FieldValue.arrayUnion(section);
+
 		firestore
 			.collection("users")
 			.doc(user)
@@ -50,6 +51,7 @@ export function trackSection(section, user) {
 							Number: section.Number,
 							SectionNumber: section.SectionNumber,
 							SectionId: section.SectionId,
+							EnrollmentStatus: section.EnrollmentStatus,
 						},
 						{ merge: true }
 					)

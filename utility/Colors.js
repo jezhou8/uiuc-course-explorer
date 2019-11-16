@@ -15,6 +15,8 @@ export function getColorByGPA(gpa) {
 export function getColorByEnrollmentStatus(status) {
 	if (status == "Open") {
 		return "#0f0";
+	} else if (status.includes("Open") && status.includes("Restricted")) {
+		return "#FFA500";
 	} else {
 		return "#f00";
 	}

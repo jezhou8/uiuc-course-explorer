@@ -89,6 +89,8 @@ export class CourseDetails extends React.Component {
 												SectionNumber:
 													item["SectionNumber"],
 												SectionId: item["SectionId"],
+												EnrollmentStatus:
+													item["EnrollmentStatus"],
 											},
 											user["notificationToken"]
 										)
