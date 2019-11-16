@@ -43,9 +43,7 @@ export function trackSection(section, user) {
 				// add to tracked
 				firestore
 					.collection("tracked")
-					.doc(
-						section.Subject + section.Number + section.SectionNumber
-					)
+					.doc(section.Subject + section.Number + section.SectionId)
 					.set(
 						{
 							Subject: section.Subject,
