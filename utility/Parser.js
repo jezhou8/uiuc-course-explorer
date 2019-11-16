@@ -1,7 +1,10 @@
 import { parse } from "fast-xml-parser";
 
 export function parseJsonFromXml(courseXml) {
-	let courseJson = parse(courseXml)["ns2:course"];
+	let courseJson = parse(courseXml, {
+		attributeNamePrefix: "",
+		ignoreAttributes: false,
+	})["ns2:course"];
 
 	let course = {
 		Description: courseJson["description"],
@@ -12,46 +15,56 @@ export function parseJsonFromXml(courseXml) {
 
 	if ("genEdCategories" in courseJson) {
 		let genEds = courseJson["genEdCategories"]["category"];
-		console.log(genEds);
 		course["GenEds"].pop();
+		console.log(genEds);
 		if (!Array.isArray(genEds)) {
-			course["GenEds"].push(
-				genEds["ns2:genEdAttributes"]["genEdAttribute"]
-			);
+			let genEdAttribute =
+				genEds["ns2:genEdAttributes"]["genEdAttribute"];
+			if (genEdAttribute["code"] === "1SS") {
+				course["GenEds"].push("Social & Behavorial Science");
+			} else if (genEdAttribute["code"] == "1US") {
+				course["GenEds"].push("US Minority");
+			} else if (genEdAttribute["code"] == "1HP") {
+				course["GenEds"].push("Humanities & the Arts");
+			} else {
+				course["GenEds"].push(genEdAttribute["#text"]);
+			}
 		} else {
 			genEds.forEach(genEd => {
-				if (
-					genEd["ns2:genEdAttributes"]["genEdAttribute"].includes(
-						"Beh Sci"
-					)
-				) {
-					course["GenEds"].push("Behavioral & Social Science");
-				} else if (
-					genEd["ns2:genEdAttributes"]["genEdAttribute"].includes(
-						"Minority"
-					)
-				) {
+				console.log(genEd["ns2:genEdAttributes"]["genEdAttribute"]);
+				let genEdAttribute =
+					genEd["ns2:genEdAttributes"]["genEdAttribute"];
+				if (genEdAttribute["code"] === "1SS") {
+					course["GenEds"].push("Social & Behavorial Science");
+				} else if (genEdAttribute["code"] == "1US") {
 					course["GenEds"].push("US Minority");
-				} else if (
-					genEd["ns2:genEdAttributes"]["genEdAttribute"].includes(
-						"Humanities"
-					)
-				) {
+				} else if (genEdAttribute["code"] == "1HP") {
 					course["GenEds"].push("Humanities & the Arts");
+				} else {
+					course["GenEds"].push(genEdAttribute["#text"]);
 				}
 			});
 		}
 	}
 
-	let sections = courseJson["detailedSections"]["detailedSection"];
+	if ("detailedSections" in courseJson) {
+		let sections = courseJson["detailedSections"]["detailedSection"];
+		if (!Array.isArray(sections)) {
+			course["Sections"].push({
+				SectionId: section["sectionNumber"],
+				SectionNumber: section["id"],
+				EnrollmentStatus: section["enrollmentStatus"],
+			});
+		} else {
+			sections.map(section => {
+				course["Sections"].push({
+					SectionId: section["sectionNumber"],
+					SectionNumber: section["id"],
+					EnrollmentStatus: section["enrollmentStatus"],
+				});
+			});
+		}
+	}
 
-	sections.forEach(section => {
-		course["Sections"].push({
-			SectionNumber: section["sectionNumber"],
-			EnrollmentStatus: section["enrollmentStatus"],
-		});
-	});
-
-	console.log(course);
 	return course;
 }

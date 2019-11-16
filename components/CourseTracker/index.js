@@ -1,8 +1,9 @@
 import { connect } from "react-redux";
-import CourseInfo from "./CourseInfo";
+import { TrackList } from "./TrackList";
+import { setNotificationToken } from "../../redux/actions";
 
 const mapStateToProps = state => ({
-	displayedCourse: state.displayedCourse,
+	user: state.user,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -10,7 +11,8 @@ const mapDispatchToProps = dispatch => {
 		// createEvent: newForm => dispatch(createEvent(newForm)),
 		// onFormDataChange: values => dispatch(onFormDataChange(values)),
 		// clearForm: () => dispatch(clearForm()),
+		setNotificationToken: token => dispatch(setNotificationToken(token)),
 	};
 };
 
-export default connect(mapStateToProps)(CourseInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(TrackList);

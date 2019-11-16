@@ -7,8 +7,8 @@ import {
 	ScrollView,
 	Dimensions,
 } from "react-native";
-import { SearchBar } from "react-native-elements";
-import Overlay from "react-native-modal-overlay";
+import { SearchBar, Overlay } from "react-native-elements";
+//import Overlay from "react-native-modal-overlay";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-safe-area-view";
@@ -16,6 +16,9 @@ import { getColorByGPA } from "../../utility/Colors";
 import { Row, Col } from "react-native-easy-grid";
 import { createKeyboardAwareNavigator } from "react-navigation";
 import { LineChart } from "react-native-chart-kit";
+import { CourseDetails } from "../CourseInfo/CourseDetails";
+import { CourseHeader } from "../CourseInfo/CourseHeader";
+import { CourseStats } from "../CourseInfo/CourseStats";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -24,6 +27,7 @@ export default class CoursesView extends React.Component {
 		numCourses: 0,
 		searchDelay: 0,
 		displayedCourse: {},
+		displayOption: "details",
 		overlayIsVisible: false,
 	};
 
@@ -55,7 +59,6 @@ export default class CoursesView extends React.Component {
 							course["Subject"],
 							course["Number"]
 						);
-						//this.props.navigation.navigate("Track");
 						this.setState({
 							...this.state,
 							displayedCourse: course,
@@ -181,79 +184,96 @@ export default class CoursesView extends React.Component {
 
 	render() {
 		const { search } = this.state;
-		let { cachedCourses } = this.props;
-
+		let { displayedCourse, user, trackSection } = this.props;
 		return (
 			<View style={styles.container}>
 				<Overlay
-					visible={this.state.overlayIsVisible}
-					animationDuration={100}
-					onClose={() =>
-						this.setState({
-							...this.state,
-							overlayIsVisible: false,
-						})
+					isVisible={this.state.overlayIsVisible}
+					overlayStyle={{ width: "90%", height: "90%", padding: 0 }}
+					onBackdropPress={() =>
+						this.setState({ overlayIsVisible: false })
 					}
-					containerStyle={{
-						alignItems: "center",
-						justifyContent: "center",
-					}}
-					childrenWrapperStyle={{ width: "95%", height: "90%" }}
-					closeOnTouchOutside
 				>
-					<LineChart
-						data={{
-							labels: [
-								"January",
-								"February",
-								"March",
-								"April",
-								"May",
-								"June",
-							],
-							datasets: [
-								{
-									data: [
-										Math.random() * 100,
-										Math.random() * 100,
-										Math.random() * 100,
-										Math.random() * 100,
-										Math.random() * 100,
-										Math.random() * 100,
-									],
-								},
-							],
-						}}
-						width={300} // from react-native
-						height={150}
-						yAxisLabel={"$"}
-						chartConfig={{
-							backgroundColor: "#fff",
-							decimalPlaces: 2, // optional, defaults to 2dp
-							color: (opacity = 1) =>
-								`rgba(255, 255, 255, ${opacity})`,
-							labelColor: (opacity = 1) =>
-								`rgba(255, 255, 255, ${opacity})`,
-							style: {
-								borderRadius: 5,
-							},
-							propsForDots: {
-								r: "6",
-								strokeWidth: "2",
-								stroke: "#ffa726",
-							},
-						}}
-						bezier
-						style={{
-							marginVertical: 8,
-							borderRadius: 5,
-						}}
-					/>
+					<View>
+						<CourseHeader
+							displayedCourse={this.state.displayedCourse}
+						></CourseHeader>
+						<View
+							style={{
+								width: "100%",
+								height: "10%",
+								backgroundColor: "#ff0",
+								flexDirection: "row",
+							}}
+						>
+							<View
+								style={{
+									width: "50%",
+									backgroundColor: "#f00",
+								}}
+							>
+								<TouchableOpacity
+									style={styles.fill}
+									onPress={() =>
+										this.setState({
+											...this.state,
+											displayOption: "details",
+										})
+									}
+								>
+									<Text>Overview</Text>
+								</TouchableOpacity>
+							</View>
+
+							<View
+								style={{
+									width: "50%",
+									backgroundColor: "#f0f",
+								}}
+							>
+								<TouchableOpacity
+									style={styles.fill}
+									onPress={() =>
+										this.setState({
+											...this.state,
+											displayOption: "stats",
+										})
+									}
+								>
+									<Text>Course Stats</Text>
+								</TouchableOpacity>
+							</View>
+						</View>
+
+						<View
+							style={{
+								width: "100%",
+								height: "80%",
+							}}
+						>
+							{this.state.displayOption == "details" && (
+								<CourseDetails
+									displayedCourse={displayedCourse}
+									courseSubject={
+										this.state.displayedCourse["Subject"]
+									}
+									courseNumber={
+										this.state.displayedCourse["Number"]
+									}
+									user={user}
+									trackSection={trackSection}
+								></CourseDetails>
+							)}
+							{this.state.displayOption == "stats" && (
+								<CourseStats></CourseStats>
+							)}
+						</View>
+					</View>
 				</Overlay>
 
 				<SearchBar
 					lightTheme
-					placeholder="Search For courses.."
+					placeholder='Search For courses..'
 					onChangeText={this.updateSearch}
 					containerStyle={{ width: "100%" }}
 					value={search}
@@ -310,5 +330,12 @@ const styles = StyleSheet.create({
 	courseTitleText: {
 		color: "#707070",
 		fontSize: 18,
+	},
+	fill: {
+		width: "100%",
+		height: "100%",
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#fff",
 	},
 });
