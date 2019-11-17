@@ -1,10 +1,16 @@
 import React from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, ScrollView } from "react-native";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import { firestore } from "../../firebase/app";
+import { getStatusBarHeight } from "react-native-safe-area-view";
+import { getTitleBySectionObject } from "../../utility/Common";
 
 export class TrackList extends React.Component {
+	state = {
+		TrackedSections: [],
+	};
+
 	componentDidMount() {
 		this.registerForPushNotificationsAsync();
 	}
@@ -40,13 +46,17 @@ export class TrackList extends React.Component {
 			.collection("users")
 			.doc(token)
 			.set({ lastLoggedIn: date.toString() }, { merge: true })
-			.then(this.props.setNotificationToken(token));
+			.then(() => {
+				this.props.setNotificationToken(token);
+				this.props.syncSections(token);
+			});
 	};
 
 	render() {
 		return (
 			<View
 				style={{
+					top: getStatusBarHeight(),
 					width: "100%",
 					height: "100%",
 					alignItems: "center",
@@ -54,11 +64,24 @@ export class TrackList extends React.Component {
 				}}
 			>
 				{"notificationToken" in this.props.user && (
-					<Text>
-						{"Notification Token: " +
-							this.props.user["notificationToken"]}
-					</Text>
+					<Text>{this.props.user["notificationToken"]}</Text>
 				)}
+				<ScrollView
+					style={{
+						width: "100%",
+						height: "90%",
+						backgroundColor: "#f00",
+					}}
+				>
+					{this.props.TrackedSections.map((section, index) => {
+						console.log("Section: ", section);
+						return (
+							<View style={{ flex: 1, margin: 2 }} key={index}>
+								<Text>{getTitleBySectionObject(section)}</Text>
+							</View>
+						);
+					})}
+				</ScrollView>
 			</View>
 		);
 	}

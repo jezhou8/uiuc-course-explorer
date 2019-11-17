@@ -4,13 +4,14 @@ import {
 	GET_CURRENT_COURSE_SUCCESS,
 	TRACK_SECTION_SUCCESS,
 	SET_NOTIFICATION_TOKEN,
+	SYNC_SECTIONS_SUCCESS,
 } from "./types";
 
 import { parse } from "fast-xml-parser";
 import axios from "axios";
 import { parseJsonFromXml } from "../../utility/Parser";
 import { firestore, firestoreRef } from "../../firebase/app";
-import { hashCode } from "../../utility/Common";
+import { hashCode, getTitleBySectionObject } from "../../utility/Common";
 
 const YEAR = 2020;
 const SEASON = "spring";
@@ -26,6 +27,25 @@ export function getCourse(title, number) {
 			.catch(err => {
 				console.log(err.message);
 				dispatch(getCourseFailure(err.message, title, number));
+			});
+	};
+}
+
+export function syncSections(token) {
+	return dispatch => {
+		firestore
+			.collection("users")
+			.doc(token)
+			.get()
+			.then(doc => {
+				if (!doc.exists) {
+					console.log("No such user!");
+				} else {
+					dispatch(syncSectionsSuccess(doc.data().TrackedSections));
+				}
+			})
+			.catch(err => {
+				console.log("Error getting document", err);
 			});
 	};
 }
@@ -68,9 +88,23 @@ export const setNotificationToken = token => {
 };
 
 const trackSectionSuccess = section => {
+	alert("Now tracking: " + getTitleBySectionObject(section));
 	return {
 		type: TRACK_SECTION_SUCCESS,
 		payload: section,
+	};
+};
+
+const syncSectionsSuccess = sections => {
+	let sectionsArr = [];
+
+	sections.forEach(section => {
+		sectionsArr.push(section);
+	});
+
+	return {
+		type: SYNC_SECTIONS_SUCCESS,
+		payload: sectionsArr,
 	};
 };
 

@@ -1,10 +1,11 @@
 import {
 	TRACK_SECTION_SUCCESS,
 	SET_NOTIFICATION_TOKEN,
+	SYNC_SECTIONS_SUCCESS,
 } from "../actions/types";
 
 const INITIAL_STATE = {
-	sections: [],
+	TrackedSections: [],
 };
 
 export default function TrackedCoursesReducer(state = INITIAL_STATE, action) {
@@ -15,7 +16,13 @@ export default function TrackedCoursesReducer(state = INITIAL_STATE, action) {
 			//console.log(action.payload);
 			return {
 				...state,
-				sections: { ...state.sections, ...action.payload },
+				TrackedSections: [...state.TrackedSections, action.payload],
+			};
+		case SYNC_SECTIONS_SUCCESS:
+			//console.log(action.payload);
+			return {
+				...state,
+				TrackedSections: [...state.TrackedSections, ...action.payload],
 			};
 		default:
 			return state;

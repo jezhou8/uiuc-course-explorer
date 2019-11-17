@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
 import { TrackList } from "./TrackList";
-import { setNotificationToken } from "../../redux/actions";
+import { setNotificationToken, syncSections } from "../../redux/actions";
 
 const mapStateToProps = state => ({
 	user: state.user,
+	TrackedSections: state.user.TrackedSections,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -12,6 +13,7 @@ const mapDispatchToProps = dispatch => {
 		// onFormDataChange: values => dispatch(onFormDataChange(values)),
 		// clearForm: () => dispatch(clearForm()),
 		setNotificationToken: token => dispatch(setNotificationToken(token)),
+		syncSections: token => dispatch(syncSections(token)),
 	};
 };
 
