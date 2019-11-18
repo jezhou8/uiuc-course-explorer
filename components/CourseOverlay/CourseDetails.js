@@ -58,7 +58,6 @@ export class CourseDetails extends React.Component {
 						</View>
 					))}
 				{displayedCourse.error == null && <Text>Section Status</Text>}
-
 				{displayedCourse.Description != null && (
 					<FlatGrid
 						itemDimension={130}

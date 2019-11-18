@@ -8,13 +8,6 @@ import {
 } from "../../utility/Colors";
 
 export class CourseHeader extends React.Component {
-	state = {
-		search: "",
-		courses: [],
-		numCourses: 0,
-		searchDelay: 0,
-	};
-
 	render() {
 		const { displayedCourse } = this.props;
 		return (

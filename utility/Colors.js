@@ -21,3 +21,6 @@ export function getColorByEnrollmentStatus(status) {
 		return "#f00";
 	}
 }
+
+export const SELECTED_COLOR = "#ccc";
+export const DEFAULT_COLOR = "#fff";

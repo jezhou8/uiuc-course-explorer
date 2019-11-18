@@ -1,30 +1,20 @@
 import React from "react";
 import { Provider } from "react-redux";
-//import AsyncStorage from "@react-native-community/async-storage";
-// import { persistStore } from "redux-persist";
-import store from "./redux/store";
+import { AsyncStorage } from "react-native";
+
+import persistStore from "./redux/store";
 import TabNavigator from "./components/Navigator/TabNavigator";
 import { AppLoading } from "expo";
+import { PersistGate } from "redux-persist/integration/react";
 
 export default class App extends React.Component {
-	state = {
-		isLoading: false,
-	};
-
-	// componentDidMount() {
-	// 	persistStore(
-	// 		store,
-	// 		{ storage: AsyncStorage, whitelist: ["trackedCourses"] },
-	// 		() => this.setState({ isLoading: false })
-	// 	);
-	// }
 	render() {
-		if (this.state.isLoading) {
-			return <AppLoading></AppLoading>;
-		}
+		const { store, persistor } = persistStore();
 		return (
 			<Provider store={store}>
-				<TabNavigator></TabNavigator>
+				<PersistGate loading={<AppLoading />} persistor={persistor}>
+					<TabNavigator></TabNavigator>
+				</PersistGate>
 			</Provider>
 		);
 	}

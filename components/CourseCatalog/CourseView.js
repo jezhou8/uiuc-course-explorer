@@ -16,9 +16,10 @@ import { getColorByGPA } from "../../utility/Colors";
 import { Row, Col } from "react-native-easy-grid";
 import { createKeyboardAwareNavigator } from "react-navigation";
 import { LineChart } from "react-native-chart-kit";
-import { CourseDetails } from "../CourseInfo/CourseDetails";
-import { CourseHeader } from "../CourseInfo/CourseHeader";
-import { CourseStats } from "../CourseInfo/CourseStats";
+import { CourseDetails } from "../CourseOverlay/CourseDetails";
+import { CourseHeader } from "../CourseOverlay/CourseHeader";
+import { CourseStats } from "../CourseOverlay/CourseStats";
+import CourseOverlay from "../CourseOverlay/";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -26,7 +27,7 @@ export default class CoursesView extends React.Component {
 		courses: [],
 		numCourses: 0,
 		searchDelay: 0,
-		displayedCourse: {},
+		additionalCourseInfo: {},
 		displayOption: "details",
 		overlayIsVisible: false,
 	};
@@ -61,7 +62,11 @@ export default class CoursesView extends React.Component {
 						);
 						this.setState({
 							...this.state,
-							displayedCourse: course,
+							additionalCourseInfo: {
+								Subject: course["Subject"],
+								Number: course["Number"],
+								CourseTitle: course["CourseTitle"],
+							},
 							overlayIsVisible: true,
 						});
 					}}
@@ -190,85 +195,13 @@ export default class CoursesView extends React.Component {
 				<Overlay
 					isVisible={this.state.overlayIsVisible}
 					overlayStyle={{ width: "90%", height: "90%", padding: 0 }}
-					onBackdropPress={() =>
-						this.setState({ overlayIsVisible: false })
-					}
+					onBackdropPress={() => {
+						this.setState({ overlayIsVisible: false });
+					}}
 				>
-					<View>
-						<CourseHeader
-							displayedCourse={this.state.displayedCourse}
-						></CourseHeader>
-						<View
-							style={{
-								width: "100%",
-								height: "10%",
-								backgroundColor: "#ff0",
-								flexDirection: "row",
-							}}
-						>
-							<View
-								style={{
-									width: "50%",
-									backgroundColor: "#f00",
-								}}
-							>
-								<TouchableOpacity
-									style={styles.fill}
-									onPress={() =>
-										this.setState({
-											...this.state,
-											displayOption: "details",
-										})
-									}
-								>
-									<Text>Overview</Text>
-								</TouchableOpacity>
-							</View>
-
-							<View
-								style={{
-									width: "50%",
-									backgroundColor: "#f0f",
-								}}
-							>
-								<TouchableOpacity
-									style={styles.fill}
-									onPress={() =>
-										this.setState({
-											...this.state,
-											displayOption: "stats",
-										})
-									}
-								>
-									<Text>Course Stats</Text>
-								</TouchableOpacity>
-							</View>
-						</View>
-
-						<View
-							style={{
-								width: "100%",
-								height: "80%",
-							}}
-						>
-							{this.state.displayOption == "details" && (
-								<CourseDetails
-									displayedCourse={displayedCourse}
-									courseSubject={
-										this.state.displayedCourse["Subject"]
-									}
-									courseNumber={
-										this.state.displayedCourse["Number"]
-									}
-									user={user}
-									trackSection={trackSection}
-								></CourseDetails>
-							)}
-							{this.state.displayOption == "stats" && (
-								<CourseStats></CourseStats>
-							)}
-						</View>
-					</View>
+					<CourseOverlay
+						additionalCourseInfo={this.state.additionalCourseInfo}
+					></CourseOverlay>
 				</Overlay>
 
 				<SearchBar

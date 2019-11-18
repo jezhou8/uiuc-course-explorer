@@ -18,9 +18,24 @@ const SEASON = "spring";
 
 export function getCourse(title, number) {
 	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
-	//const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/AAS/100.xml?mode=cascade`;
 
 	return dispatch => {
+		dispatch(getCourseStarted());
+		axios
+			.get(url)
+			.then(res => dispatch(getCourseSuccess(res.data)))
+			.catch(err => {
+				console.log(err.message);
+				dispatch(getCourseFailure(err.message, title, number));
+			});
+	};
+}
+
+export function getOldCourse(title, number) {
+	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/2019/fall/${title}/${number}.xml?mode=cascade`;
+
+	return dispatch => {
+		dispatch(getCourseStarted());
 		axios
 			.get(url)
 			.then(res => dispatch(getCourseSuccess(res.data)))
@@ -53,7 +68,6 @@ export function syncSections(token) {
 export function trackSection(section, user) {
 	return dispatch => {
 		const updatedSections = firestoreRef.FieldValue.arrayUnion(section);
-
 		firestore
 			.collection("users")
 			.doc(user)
@@ -120,7 +134,7 @@ const getCourseSuccess = courseXml => {
 };
 
 const getCourseStarted = () => ({
-	type: GET_CURRENT_COURSE_SUCCESS,
+	type: GET_CURRENT_COURSE,
 });
 
 const getCourseFailure = (error, subject, number) => ({
