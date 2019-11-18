@@ -1,10 +1,19 @@
 import React from "react";
-import { Text, StyleSheet, View, ScrollView } from "react-native";
+import {
+	Text,
+	SafeAreaView,
+	RefreshControl,
+	StyleSheet,
+	View,
+	ScrollView,
+	AsyncStorage,
+} from "react-native";
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import { firestore } from "../../firebase/app";
 import { getStatusBarHeight } from "react-native-safe-area-view";
-import { getTitleBySectionObject } from "../../utility/Common";
+import { getTitleBySectionObject, DEBUG_LOG } from "../../utility/Common";
+import { getColorByEnrollmentStatus } from "../../utility/Colors";
 
 export class TrackList extends React.Component {
 	state = {
@@ -12,10 +21,15 @@ export class TrackList extends React.Component {
 	};
 
 	componentDidMount() {
-		this.registerForPushNotificationsAsync();
+		if (this.props.user.NotificationToken == null) {
+			this.registerForPushNotificationsAsync();
+		} else {
+			this.props.syncSections(this.props.user.NotificationToken);
+		}
 	}
 
 	registerForPushNotificationsAsync = async () => {
+		DEBUG_LOG("fetching token...");
 		const { status: existingStatus } = await Permissions.getAsync(
 			Permissions.NOTIFICATIONS
 		);
@@ -63,25 +77,52 @@ export class TrackList extends React.Component {
 					justifyContent: "center",
 				}}
 			>
-				{"notificationToken" in this.props.user && (
-					<Text>{this.props.user["notificationToken"]}</Text>
+				{"NotificationToken" in this.props.user && (
+					<Text>{this.props.user["NotificationToken"]}</Text>
 				)}
-				<ScrollView
-					style={{
-						width: "100%",
-						height: "90%",
-						backgroundColor: "#f00",
-					}}
+				<Text
+					style={{ color: "red", fontSize: 20 }}
+					onPress={() => AsyncStorage.removeItem("persist:root")}
 				>
-					{this.props.TrackedSections.map((section, index) => {
-						console.log("Section: ", section);
-						return (
-							<View style={{ flex: 1, margin: 2 }} key={index}>
-								<Text>{getTitleBySectionObject(section)}</Text>
-							</View>
-						);
-					})}
-				</ScrollView>
+					PURGE LOCAL STORAGE
+				</Text>
+
+				<SafeAreaView style={{ flex: 1 }}>
+					<ScrollView
+						style={{
+							flex: 1,
+						}}
+						refreshControl={
+							<RefreshControl
+								refreshing={this.props.user.refreshing}
+								onRefresh={() =>
+									this.props.syncSections(
+										this.props.user.NotificationToken
+									)
+								}
+							/>
+						}
+					>
+						{this.props.TrackedSections.map((section, index) => {
+							return (
+								<View
+									style={{
+										flex: 1,
+										margin: 2,
+										backgroundColor: getColorByEnrollmentStatus(
+											section["EnrollmentStatus"]
+										),
+									}}
+									key={index}
+								>
+									<Text>
+										{getTitleBySectionObject(section)}
+									</Text>
+								</View>
+							);
+						})}
+					</ScrollView>
+				</SafeAreaView>
 			</View>
 		);
 	}

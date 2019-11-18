@@ -5,13 +5,18 @@ import {
 	TRACK_SECTION_SUCCESS,
 	SET_NOTIFICATION_TOKEN,
 	SYNC_SECTIONS_SUCCESS,
+	SYNC_SECTIONS,
 } from "./types";
 
 import { parse } from "fast-xml-parser";
 import axios from "axios";
 import { parseJsonFromXml } from "../../utility/Parser";
 import { firestore, firestoreRef } from "../../firebase/app";
-import { hashCode, getTitleBySectionObject } from "../../utility/Common";
+import {
+	hashCode,
+	getTitleBySectionObject,
+	DEBUG_LOG,
+} from "../../utility/Common";
 
 const YEAR = 2020;
 const SEASON = "spring";
@@ -47,21 +52,29 @@ export function getOldCourse(title, number) {
 }
 
 export function syncSections(token) {
+	DEBUG_LOG("syncing...");
 	return dispatch => {
-		firestore
-			.collection("users")
-			.doc(token)
-			.get()
-			.then(doc => {
-				if (!doc.exists) {
-					console.log("No such user!");
-				} else {
-					dispatch(syncSectionsSuccess(doc.data().TrackedSections));
-				}
-			})
-			.catch(err => {
-				console.log("Error getting document", err);
-			});
+		dispatch(syncSectionsStarted());
+		if (token == null) {
+			alert("You must grant Notification Permissions!");
+		} else {
+			firestore
+				.collection("users")
+				.doc(token)
+				.get()
+				.then(doc => {
+					if (!doc.exists) {
+						console.log("No such user!");
+					} else {
+						dispatch(
+							syncSectionsSuccess(doc.data().TrackedSections)
+						);
+					}
+				})
+				.catch(err => {
+					console.log("Error getting document", err);
+				});
+		}
 	};
 }
 
@@ -119,6 +132,12 @@ const syncSectionsSuccess = sections => {
 	return {
 		type: SYNC_SECTIONS_SUCCESS,
 		payload: sectionsArr,
+	};
+};
+
+const syncSectionsStarted = () => {
+	return {
+		type: SYNC_SECTIONS,
 	};
 };
 

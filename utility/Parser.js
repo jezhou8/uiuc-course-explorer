@@ -16,7 +16,6 @@ export function parseJsonFromXml(courseXml) {
 	if ("genEdCategories" in courseJson) {
 		let genEds = courseJson["genEdCategories"]["category"];
 		course["GenEds"].pop();
-		console.log(genEds);
 		if (!Array.isArray(genEds)) {
 			let genEdAttribute =
 				genEds["ns2:genEdAttributes"]["genEdAttribute"];
@@ -31,7 +30,6 @@ export function parseJsonFromXml(courseXml) {
 			}
 		} else {
 			genEds.forEach(genEd => {
-				console.log(genEd["ns2:genEdAttributes"]["genEdAttribute"]);
 				let genEdAttribute =
 					genEd["ns2:genEdAttributes"]["genEdAttribute"];
 				if (genEdAttribute["code"] === "1SS") {

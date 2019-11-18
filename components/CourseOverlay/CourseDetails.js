@@ -91,7 +91,7 @@ export class CourseDetails extends React.Component {
 												EnrollmentStatus:
 													item["EnrollmentStatus"],
 											},
-											user["notificationToken"]
+											user["NotificationToken"]
 										)
 									}
 								>

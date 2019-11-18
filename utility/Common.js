@@ -10,3 +10,10 @@ export function getTitleBySectionObject(section) {
 	}
 	return section.Subject + " " + section.Number + "-" + section.SectionId;
 }
+
+const DEBUG_ENABLED = 1;
+export function DEBUG_LOG(message) {
+	if (DEBUG_ENABLED) {
+		console.log(message);
+	}
+}
