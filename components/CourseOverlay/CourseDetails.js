@@ -14,6 +14,8 @@ import {
 	getColorByGPA,
 	getColorByEnrollmentStatus,
 } from "../../utility/Colors";
+
+import { Snackbar } from "react-native-paper";
 import { FlatGrid } from "react-native-super-grid";
 
 export class CourseDetails extends React.Component {
@@ -111,6 +113,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#fff",
 		overflow: "scroll",
+	},
+	container2: {
+		paddingLeft: 15,
+		paddingRight: 15,
 	},
 	genEdContainer: {
 		borderRadius: 5,

@@ -14,6 +14,6 @@ export function getTitleBySectionObject(section) {
 const DEBUG_ENABLED = 1;
 export function DEBUG_LOG(message) {
 	if (DEBUG_ENABLED) {
-		console.log(message);
+		console.log("DEBUG: ", message);
 	}
 }

@@ -26,6 +26,8 @@ export class CourseStats extends Component {
 		activeSections: [],
 	};
 
+	componentDidMount() {}
+
 	_renderSectionTitle = section => {};
 
 	_renderHeader = section => {

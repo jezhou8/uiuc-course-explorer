@@ -30,7 +30,7 @@ export function getCourse(title, number) {
 			.get(url)
 			.then(res => dispatch(getCourseSuccess(res.data)))
 			.catch(err => {
-				console.log(err.message);
+				DEBUG_LOG(err.message);
 				dispatch(getCourseFailure(err.message, title, number));
 			});
 	};
@@ -45,7 +45,7 @@ export function getOldCourse(title, number) {
 			.get(url)
 			.then(res => dispatch(getCourseSuccess(res.data)))
 			.catch(err => {
-				console.log(err.message);
+				DEBUG_LOG(err.message);
 				dispatch(getCourseFailure(err.message, title, number));
 			});
 	};
@@ -64,7 +64,7 @@ export function syncSections(token) {
 				.get()
 				.then(doc => {
 					if (!doc.exists) {
-						console.log("No such user!");
+						DEBUG_LOG("No such user!");
 					} else {
 						dispatch(
 							syncSectionsSuccess(doc.data().TrackedSections)
@@ -72,7 +72,7 @@ export function syncSections(token) {
 					}
 				})
 				.catch(err => {
-					console.log("Error getting document", err);
+					DEBUG_LOG("Error getting document", err);
 				});
 		}
 	};
@@ -99,6 +99,7 @@ export function trackSection(section, user) {
 							SectionNumber: section.SectionNumber,
 							SectionId: section.SectionId,
 							EnrollmentStatus: section.EnrollmentStatus,
+							Trackers: firestoreRef.FieldValue.increment(1),
 						},
 						{ merge: true }
 					)
@@ -142,6 +143,8 @@ const syncSectionsStarted = () => {
 };
 
 const getCourseSuccess = courseXml => {
+	DEBUG_LOG("Got course!");
+
 	let courseJson = parseJsonFromXml(courseXml);
 
 	return {
