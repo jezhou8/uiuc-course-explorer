@@ -116,8 +116,6 @@ export const setNotificationToken = token => {
 };
 
 const trackSectionSuccess = section => {
-	alert("Now tracking: " + getTitleBySectionObject(section));
-
 	let sectionMap = {};
 	let key = section["Subject"] + section["Number"] + section["SectionId"];
 	sectionMap[key] = section;
