@@ -206,7 +206,7 @@ export default class CoursesView extends React.Component {
 
 				<SearchBar
 					lightTheme
-					placeholder='Search For courses..'
+					placeholder="Search For courses.."
 					onChangeText={this.updateSearch}
 					containerStyle={{ width: "100%" }}
 					value={search}

@@ -63,7 +63,7 @@ export class CourseInfoOverlay extends React.Component {
 				<View
 					style={{
 						width: "100%",
-						height: "10%",
+						height: "7%",
 						flexDirection: "row",
 					}}
 				>
@@ -85,7 +85,7 @@ export class CourseInfoOverlay extends React.Component {
 
 					<View
 						style={{
-							width: "50%",
+							width: "49.5%",
 						}}
 					>
 						<TouchableOpacity
@@ -95,7 +95,7 @@ export class CourseInfoOverlay extends React.Component {
 							}}
 							onPress={() => this._setOpt("stats")}
 						>
-							<Text>Course Stats</Text>
+							<Text>Stats</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -103,7 +103,7 @@ export class CourseInfoOverlay extends React.Component {
 					<View
 						style={{
 							width: "100%",
-							height: "80%",
+							height: "83%",
 						}}
 					>
 						{this.state.displayOption == "details" && (

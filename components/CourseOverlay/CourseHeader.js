@@ -29,16 +29,9 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "10%",
-		backgroundColor: "#ddd",
 		alignItems: "center",
+		justifyContent: "center",
 	},
-	genEdContainer: {
-		borderWidth: 1,
-		borderRadius: 12,
-		padding: 5,
-		margin: 5,
-	},
-	sectionContainer: {},
 	itemtext: {
 		fontSize: 16,
 	},

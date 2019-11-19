@@ -17,6 +17,7 @@ import {
 
 import { Snackbar } from "react-native-paper";
 import { FlatGrid } from "react-native-super-grid";
+import { SectionLabel } from "./SectionLabel";
 
 export class CourseDetails extends React.Component {
 	state = {
@@ -50,59 +51,47 @@ export class CourseDetails extends React.Component {
 						<Text>{displayedCourse.Description}</Text>
 					</View>
 				)}
+				<View style={styles.genEdContainer}>
+					{displayedCourse.Description != null &&
+						displayedCourse["GenEds"].map((genEd, index) => (
+							<View key={index} style={styles.genEdLabel}>
+								<Text style={{ color: "#E19500" }}>
+									{genEd}
+								</Text>
+							</View>
+						))}
+				</View>
 				{displayedCourse.error == null && (
-					<Text>Gen Eds Fulfilled</Text>
+					<Text
+						style={{
+							fontSize: 16,
+							fontWeight: "bold",
+							color: "#666666",
+							paddingLeft: 10,
+						}}
+					>
+						Sections available for Spring 2020
+					</Text>
 				)}
 				{displayedCourse.Description != null &&
-					displayedCourse["GenEds"].map((genEd, index) => (
-						<View key={index} style={styles.genEdContainer}>
-							<Text>{genEd}</Text>
-						</View>
-					))}
-				{displayedCourse.error == null && <Text>Section Status</Text>}
-				{displayedCourse.Description != null && (
-					<FlatGrid
-						itemDimension={130}
-						items={displayedCourse["Sections"]}
-						style={styles.gridView}
-						// staticDimension={300}
-						// fixed
-						// spacing={20}
-						scrollEnabled={false}
-						renderItem={({ item, index }) => {
-							let statusColor = {
-								backgroundColor: getColorByEnrollmentStatus(
-									item["EnrollmentStatus"]
-								),
-							};
-							return (
-								<TouchableOpacity
-									key={index}
-									style={{
-										...styles.sectionContainer,
-										...statusColor,
-									}}
-									onPress={() =>
-										trackSection(
-											{
-												Subject: courseSubject,
-												Number: courseNumber,
-												SectionNumber:
-													item["SectionNumber"],
-												SectionId: item["SectionId"],
-												EnrollmentStatus:
-													item["EnrollmentStatus"],
-											},
-											user["NotificationToken"]
-										)
-									}
-								>
-									<Text>{item["SectionId"]}</Text>
-								</TouchableOpacity>
-							);
-						}}
-					/>
-				)}
+					displayedCourse.Sections.map((section, index) => {
+						let key =
+							"" +
+							courseSubject +
+							courseNumber +
+							section["SectionId"];
+						return (
+							<SectionLabel
+								key={index}
+								section={section}
+								userToken={user["NotificationToken"]}
+								trackSection={trackSection}
+								courseSubject={courseSubject}
+								courseNumber={courseNumber}
+								tracked={key in user["TrackedSections"]}
+							></SectionLabel>
+						);
+					})}
 			</ScrollView>
 		);
 	}
@@ -112,22 +101,29 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#fff",
-		overflow: "scroll",
 	},
 	container2: {
-		paddingLeft: 15,
-		paddingRight: 15,
+		marginTop: 5,
+		paddingLeft: 10,
+		paddingRight: 10,
 	},
 	genEdContainer: {
-		borderRadius: 5,
-		padding: 5,
-		margin: 5,
-		backgroundColor: "#ec9b3b",
+		justifyContent: "center",
+		alignItems: "center",
+		width: "100%",
+		marginVertical: 10,
+	},
+	genEdLabel: {
+		backgroundColor: "#FFD990",
+		borderRadius: 20,
+		paddingVertical: 5,
+		paddingHorizontal: 10,
+		marginVertical: 3,
+		flex: 1,
 	},
 	gridView: {
 		flex: 1,
 	},
-
 	sectionContainer: {
 		flexDirection: "row",
 		justifyContent: "center",

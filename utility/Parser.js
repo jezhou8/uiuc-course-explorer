@@ -66,3 +66,22 @@ export function parseJsonFromXml(courseXml) {
 
 	return course;
 }
+
+export function parseStatusFromString(s) {
+	let res = "";
+	if (s.includes("Open")) {
+		res += "Open";
+	} else if (s.includes("Closed")) {
+		res += "Closed";
+	}
+
+	if (s.includes("Restricted")) {
+		res += " (Restricted)";
+	}
+
+	if (res == "") {
+		res = "Unknown";
+	}
+
+	return res;
+}

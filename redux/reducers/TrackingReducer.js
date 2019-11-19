@@ -6,7 +6,7 @@ import {
 } from "../actions/types";
 
 const INITIAL_STATE = {
-	TrackedSections: [],
+	TrackedSections: {},
 	refreshing: false,
 };
 
@@ -17,12 +17,15 @@ export default function TrackedCoursesReducer(state = INITIAL_STATE, action) {
 		case TRACK_SECTION_SUCCESS:
 			return {
 				...state,
-				TrackedSections: [...state.TrackedSections, action.payload],
+				TrackedSections: {
+					...state.TrackedSections,
+					...action.payload,
+				},
 			};
 		case SYNC_SECTIONS_SUCCESS:
 			return {
 				...state,
-				TrackedSections: action.payload,
+				TrackedSections: { ...action.payload },
 				refreshing: false,
 			};
 		case SYNC_SECTIONS:

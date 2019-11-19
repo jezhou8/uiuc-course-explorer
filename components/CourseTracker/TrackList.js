@@ -16,10 +16,6 @@ import { getTitleBySectionObject, DEBUG_LOG } from "../../utility/Common";
 import { getColorByEnrollmentStatus } from "../../utility/Colors";
 
 export class TrackList extends React.Component {
-	state = {
-		TrackedSections: [],
-	};
-
 	componentDidMount() {
 		if (this.props.user.NotificationToken == null) {
 			this.registerForPushNotificationsAsync();
@@ -67,6 +63,8 @@ export class TrackList extends React.Component {
 	};
 
 	render() {
+		let { user } = this.props;
+
 		return (
 			<View
 				style={{
@@ -82,7 +80,10 @@ export class TrackList extends React.Component {
 				)}
 				<Text
 					style={{ color: "red", fontSize: 20 }}
-					onPress={() => AsyncStorage.removeItem("persist:root")}
+					onPress={() => {
+						alert("Purging!");
+						AsyncStorage.removeItem("persist:root");
+					}}
 				>
 					PURGE LOCAL STORAGE
 				</Text>
@@ -103,7 +104,8 @@ export class TrackList extends React.Component {
 							/>
 						}
 					>
-						{this.props.TrackedSections.map((section, index) => {
+						{Object.keys(user["TrackedSections"]).map(key => {
+							let section = user["TrackedSections"][key];
 							return (
 								<View
 									style={{
@@ -113,7 +115,7 @@ export class TrackList extends React.Component {
 											section["EnrollmentStatus"]
 										),
 									}}
-									key={index}
+									key={key}
 								>
 									<Text>
 										{getTitleBySectionObject(section)}

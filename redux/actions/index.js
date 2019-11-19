@@ -117,22 +117,27 @@ export const setNotificationToken = token => {
 
 const trackSectionSuccess = section => {
 	alert("Now tracking: " + getTitleBySectionObject(section));
+
+	let sectionMap = {};
+	let key = section["Subject"] + section["Number"] + section["SectionId"];
+	sectionMap[key] = section;
 	return {
 		type: TRACK_SECTION_SUCCESS,
-		payload: section,
+		payload: sectionMap,
 	};
 };
 
 const syncSectionsSuccess = sections => {
-	let sectionsArr = [];
+	let sectionsMap = {};
 
 	sections.forEach(section => {
-		sectionsArr.push(section);
+		let key = section["Subject"] + section["Number"] + section["SectionId"];
+		sectionsMap[key] = section;
 	});
 
 	return {
 		type: SYNC_SECTIONS_SUCCESS,
-		payload: sectionsArr,
+		payload: sectionsMap,
 	};
 };
 
