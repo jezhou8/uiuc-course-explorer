@@ -68,16 +68,7 @@ export function parseJsonFromXml(courseXml) {
 }
 
 export function parseStatusFromString(s) {
-	let res = "";
-	if (s.includes("Open")) {
-		res += "Open";
-	} else if (s.includes("Closed")) {
-		res += "Closed";
-	}
-
-	if (s.includes("Restricted")) {
-		res += " (Restricted)";
-	}
+	let res = s.replace("(Restricted)", "");
 
 	if (res == "") {
 		res = "Unknown";
