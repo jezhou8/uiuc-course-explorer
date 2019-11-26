@@ -95,8 +95,8 @@ export class SectionLabel extends React.Component {
 							this._confirmUntrack(trackSectionInfo, userToken)
 						}
 					>
-						<Text style={{ fontSize: 16, color: "#BBB" }}>
-							Tracking
+						<Text style={{ fontSize: 16, color: "#F00" }}>
+							Untrack
 						</Text>
 					</TouchableOpacity>
 				)}
