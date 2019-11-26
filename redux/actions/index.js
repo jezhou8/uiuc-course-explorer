@@ -6,8 +6,10 @@ import {
 	SET_NOTIFICATION_TOKEN,
 	SYNC_SECTIONS_SUCCESS,
 	SYNC_SECTIONS,
+	UNTRACK_SECTION_SUCCESS,
 } from "./types";
 
+import { Alert } from "react-native";
 import { parse } from "fast-xml-parser";
 import axios from "axios";
 import { parseJsonFromXml } from "../../utility/Parser";
@@ -78,6 +80,19 @@ export function syncSections(token) {
 	};
 }
 
+export function untrackSection(section, user) {
+	return dispatch => {
+		const updatedSections = firestoreRef.FieldValue.arrayRemove(section);
+		firestore
+			.collection("users")
+			.doc(user)
+			.update({
+				TrackedSections: updatedSections,
+			})
+			.then(() => dispatch(untrackSectionSuccess(section)));
+	};
+}
+
 export function trackSection(section, user) {
 	return dispatch => {
 		const updatedSections = firestoreRef.FieldValue.arrayUnion(section);
@@ -122,6 +137,14 @@ const trackSectionSuccess = section => {
 	return {
 		type: TRACK_SECTION_SUCCESS,
 		payload: sectionMap,
+	};
+};
+
+const untrackSectionSuccess = section => {
+	let key = section["Subject"] + section["Number"] + section["SectionId"];
+	return {
+		type: UNTRACK_SECTION_SUCCESS,
+		payload: key,
 	};
 };
 

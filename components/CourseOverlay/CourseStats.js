@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { getStatusBarHeight } from "react-native-safe-area-view";
+
 const SECTIONS = [
 	{
 		title: "First",

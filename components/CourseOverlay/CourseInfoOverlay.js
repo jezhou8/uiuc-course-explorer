@@ -53,6 +53,7 @@ export class CourseInfoOverlay extends React.Component {
 			additionalCourseInfo,
 			user,
 			trackSection,
+			untrackSection,
 		} = this.props;
 
 		return (
@@ -113,6 +114,7 @@ export class CourseInfoOverlay extends React.Component {
 								courseNumber={additionalCourseInfo["Number"]}
 								user={user}
 								trackSection={trackSection}
+								untrackSection={untrackSection}
 							></CourseDetails>
 						)}
 						{this.state.displayOption == "stats" && (

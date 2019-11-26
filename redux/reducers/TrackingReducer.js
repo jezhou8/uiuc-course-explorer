@@ -3,7 +3,9 @@ import {
 	SET_NOTIFICATION_TOKEN,
 	SYNC_SECTIONS_SUCCESS,
 	SYNC_SECTIONS,
+	UNTRACK_SECTION_SUCCESS,
 } from "../actions/types";
+import _ from "lodash";
 
 const INITIAL_STATE = {
 	TrackedSections: {},
@@ -21,6 +23,11 @@ export default function TrackedCoursesReducer(state = INITIAL_STATE, action) {
 					...state.TrackedSections,
 					...action.payload,
 				},
+			};
+		case UNTRACK_SECTION_SUCCESS:
+			return {
+				...state,
+				TrackedSections: _.omit(state.TrackedSections, action.payload),
 			};
 		case SYNC_SECTIONS_SUCCESS:
 			return {

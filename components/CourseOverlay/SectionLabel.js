@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { firestore } from "../../firebase/app";
 import {
@@ -9,6 +9,30 @@ import {
 import { parseStatusFromString } from "../../utility/Parser";
 
 export class SectionLabel extends React.Component {
+	_confirmUntrack = (section, userToken) => {
+		Alert.alert(
+			"Confirm",
+			"Untrack: " +
+				section.Subject +
+				section.Number +
+				"-" +
+				section.SectionId,
+			[
+				{
+					text: "Cancel",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel",
+				},
+				{
+					text: "OK",
+					onPress: () =>
+						this.props.untrackSection(section, userToken),
+				},
+			],
+			{ cancelable: false }
+		);
+	};
+
 	render() {
 		const {
 			section,
@@ -23,6 +47,15 @@ export class SectionLabel extends React.Component {
 				section["EnrollmentStatus"]
 			),
 		};
+
+		const trackSectionInfo = {
+			Subject: courseSubject,
+			Number: courseNumber,
+			SectionNumber: section["SectionNumber"],
+			SectionId: section["SectionId"],
+			EnrollmentStatus: section["EnrollmentStatus"],
+		};
+
 		return (
 			<View
 				style={{
@@ -48,17 +81,7 @@ export class SectionLabel extends React.Component {
 					<TouchableOpacity
 						style={styles.trackButton}
 						onPress={() =>
-							trackSection(
-								{
-									Subject: courseSubject,
-									Number: courseNumber,
-									SectionNumber: section["SectionNumber"],
-									SectionId: section["SectionId"],
-									EnrollmentStatus:
-										section["EnrollmentStatus"],
-								},
-								userToken
-							)
+							trackSection(trackSectionInfo, userToken)
 						}
 					>
 						<Text style={{ fontSize: 16, color: "#477f91" }}>
@@ -66,11 +89,16 @@ export class SectionLabel extends React.Component {
 						</Text>
 					</TouchableOpacity>
 				) : (
-					<View style={styles.isTrackingButton}>
+					<TouchableOpacity
+						style={styles.isTrackingButton}
+						onPress={() =>
+							this._confirmUntrack(trackSectionInfo, userToken)
+						}
+					>
 						<Text style={{ fontSize: 16, color: "#BBB" }}>
 							Tracking
 						</Text>
-					</View>
+					</TouchableOpacity>
 				)}
 			</View>
 		);

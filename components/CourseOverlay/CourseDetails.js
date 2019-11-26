@@ -32,6 +32,7 @@ export class CourseDetails extends React.Component {
 			displayedCourse,
 			user,
 			trackSection,
+			untrackSection,
 			courseSubject,
 			courseNumber,
 		} = this.props;
@@ -86,6 +87,7 @@ export class CourseDetails extends React.Component {
 								section={section}
 								userToken={user["NotificationToken"]}
 								trackSection={trackSection}
+								untrackSection={untrackSection}
 								courseSubject={courseSubject}
 								courseNumber={courseNumber}
 								tracked={key in user["TrackedSections"]}
