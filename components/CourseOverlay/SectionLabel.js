@@ -13,6 +13,7 @@ export class SectionLabel extends React.Component {
 		const {
 			section,
 			trackSection,
+			untrackSection,
 			userToken,
 			courseNumber,
 			courseSubject,
