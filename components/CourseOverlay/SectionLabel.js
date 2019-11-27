@@ -9,30 +9,6 @@ import {
 import { parseStatusFromString } from "../../utility/Parser";
 
 export class SectionLabel extends React.Component {
-	_confirmUntrack = (section, userToken) => {
-		Alert.alert(
-			"Confirm",
-			"Untrack: " +
-				section.Subject +
-				section.Number +
-				"-" +
-				section.SectionId,
-			[
-				{
-					text: "Cancel",
-					onPress: () => console.log("Cancel Pressed"),
-					style: "cancel",
-				},
-				{
-					text: "OK",
-					onPress: () =>
-						this.props.untrackSection(section, userToken),
-				},
-			],
-			{ cancelable: false }
-		);
-	};
-
 	render() {
 		const {
 			section,
@@ -92,7 +68,7 @@ export class SectionLabel extends React.Component {
 					<TouchableOpacity
 						style={styles.isTrackingButton}
 						onPress={() =>
-							this._confirmUntrack(trackSectionInfo, userToken)
+							untrackSection(trackSectionInfo, userToken)
 						}
 					>
 						<Text style={{ fontSize: 16, color: "#F00" }}>
