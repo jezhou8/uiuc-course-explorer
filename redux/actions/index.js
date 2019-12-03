@@ -89,7 +89,24 @@ export function untrackSection(section, user) {
 			.update({
 				TrackedSections: updatedSections,
 			})
-			.then(() => dispatch(untrackSectionSuccess(section)));
+			.then(function() {
+				// add to tracked
+				firestore
+					.collection("tracked")
+					.doc(section.Subject + section.Number + section.SectionId)
+					.set(
+						{
+							Subject: section.Subject,
+							Number: section.Number,
+							SectionNumber: section.SectionNumber,
+							SectionId: section.SectionId,
+							EnrollmentStatus: section.EnrollmentStatus,
+							Trackers: firestoreRef.FieldValue.increment(-1),
+						},
+						{ merge: true }
+					)
+					.then(dispatch(untrackSectionSuccess(section)));
+			});
 	};
 }
 
