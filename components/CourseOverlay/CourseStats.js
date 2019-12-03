@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import Accordion from "react-native-collapsible/Accordion";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ListView,
-	ScrollView,
-	Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { getStatusBarHeight } from "react-native-safe-area-view";
 

@@ -1,12 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, ListView, ScrollView } from "react-native";
-import { SearchBar } from "react-native-elements";
-import { firestore } from "../../firebase/app";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+
 import { getStatusBarHeight } from "react-native-safe-area-view";
-import {
-	getColorByGPA,
-	getColorByEnrollmentStatus,
-} from "../../utility/Colors";
+import { getColorByEnrollmentStatus } from "../../utility/Colors";
 
 export default class CoursesView extends React.Component {
 	state = {

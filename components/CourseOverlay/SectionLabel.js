@@ -1,11 +1,6 @@
 import React from "react";
-import { Alert, StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { SearchBar } from "react-native-elements";
-import { firestore } from "../../firebase/app";
-import {
-	getColorByGPA,
-	getColorByEnrollmentStatus,
-} from "../../utility/Colors";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { getColorByEnrollmentStatus } from "../../utility/Colors";
 import { parseStatusFromString } from "../../utility/Parser";
 
 export class SectionLabel extends React.Component {

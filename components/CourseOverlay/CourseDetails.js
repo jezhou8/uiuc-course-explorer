@@ -1,22 +1,5 @@
 import React from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ListView,
-	ScrollView,
-	TouchableOpacity,
-} from "react-native";
-import { SearchBar } from "react-native-elements";
-import { firestore } from "../../firebase/app";
-import { getStatusBarHeight } from "react-native-safe-area-view";
-import {
-	getColorByGPA,
-	getColorByEnrollmentStatus,
-} from "../../utility/Colors";
-
-import { Snackbar } from "react-native-paper";
-import { FlatGrid } from "react-native-super-grid";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { SectionLabel } from "./SectionLabel";
 
 export class CourseDetails extends React.Component {
@@ -36,7 +19,7 @@ export class CourseDetails extends React.Component {
 			courseSubject,
 			courseNumber,
 		} = this.props;
-		//console.log(displayedCourse["Sections"]);
+
 		return (
 			<ScrollView style={styles.container}>
 				{displayedCourse.error != null && (

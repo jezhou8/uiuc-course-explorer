@@ -1,22 +1,7 @@
 import React from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ListView,
-	ScrollView,
-	Dimensions,
-} from "react-native";
-import { SearchBar, Overlay } from "react-native-elements";
-//import Overlay from "react-native-modal-overlay";
-import { firestore } from "../../firebase/app";
+import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { getStatusBarHeight } from "react-native-safe-area-view";
-import {
-	getColorByGPA,
-	SELECTED_COLOR,
-	DEFAULT_COLOR,
-} from "../../utility/Colors";
+import { SELECTED_COLOR, DEFAULT_COLOR } from "../../utility/Colors";
 import { CourseDetails } from "./CourseDetails";
 import { CourseHeader } from "./CourseHeader";
 import { CourseStats } from "./CourseStats";

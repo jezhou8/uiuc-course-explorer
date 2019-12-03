@@ -1,24 +1,11 @@
 import React from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ListView,
-	ScrollView,
-	Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { SearchBar, Overlay } from "react-native-elements";
 //import Overlay from "react-native-modal-overlay";
 import { firestore } from "../../firebase/app";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-safe-area-view";
 import { getColorByGPA } from "../../utility/Colors";
-import { Row, Col } from "react-native-easy-grid";
-import { createKeyboardAwareNavigator } from "react-navigation";
-import { LineChart } from "react-native-chart-kit";
-import { CourseDetails } from "../CourseOverlay/CourseDetails";
-import { CourseHeader } from "../CourseOverlay/CourseHeader";
-import { CourseStats } from "../CourseOverlay/CourseStats";
 import CourseOverlay from "../CourseOverlay/";
 
 export default class CoursesView extends React.Component {
