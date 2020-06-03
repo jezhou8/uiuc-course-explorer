@@ -6,8 +6,10 @@ import {
 	SET_NOTIFICATION_TOKEN,
 	SYNC_SECTIONS_SUCCESS,
 	SYNC_SECTIONS,
+	UNTRACK_SECTION_SUCCESS,
 } from "./types";
 
+import { Alert } from "react-native";
 import { parse } from "fast-xml-parser";
 import axios from "axios";
 import { parseJsonFromXml } from "../../utility/Parser";
@@ -78,6 +80,36 @@ export function syncSections(token) {
 	};
 }
 
+export function untrackSection(section, user) {
+	return dispatch => {
+		const updatedSections = firestoreRef.FieldValue.arrayRemove(section);
+		firestore
+			.collection("users")
+			.doc(user)
+			.update({
+				TrackedSections: updatedSections,
+			})
+			.then(function() {
+				// add to tracked
+				firestore
+					.collection("tracked")
+					.doc(section.Subject + section.Number + section.SectionId)
+					.set(
+						{
+							Subject: section.Subject,
+							Number: section.Number,
+							SectionNumber: section.SectionNumber,
+							SectionId: section.SectionId,
+							EnrollmentStatus: section.EnrollmentStatus,
+							Trackers: firestoreRef.FieldValue.increment(-1),
+						},
+						{ merge: true }
+					)
+					.then(dispatch(untrackSectionSuccess(section)));
+			});
+	};
+}
+
 export function trackSection(section, user) {
 	return (dispatch) => {
 		const updatedSections = firestoreRef.FieldValue.arrayUnion(section);
@@ -125,7 +157,19 @@ const trackSectionSuccess = (section) => {
 	};
 };
 
+<<<<<<< HEAD
 const syncSectionsSuccess = (sections) => {
+=======
+const untrackSectionSuccess = section => {
+	let key = section["Subject"] + section["Number"] + section["SectionId"];
+	return {
+		type: UNTRACK_SECTION_SUCCESS,
+		payload: key,
+	};
+};
+
+const syncSectionsSuccess = sections => {
+>>>>>>> 6a3f66d0df6f71aa8be13d6bb5161efba574b40f
 	let sectionsMap = {};
 
 	sections.forEach((section) => {

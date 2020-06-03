@@ -1,11 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ListView, ScrollView } from "react-native";
-import { SearchBar } from "react-native-elements";
-import { firestore } from "../../firebase/app";
-import {
-	getColorByGPA,
-	getColorByEnrollmentStatus,
-} from "../../utility/Colors";
+import { StyleSheet, Text, View } from "react-native";
 
 export class CourseHeader extends React.Component {
 	render() {

@@ -9,7 +9,7 @@ export function parseJsonFromXml(courseXml) {
 	let course = {
 		Description: courseJson["description"],
 		CreditHours: courseJson["creditHours"],
-		GenEds: ["None"],
+		GenEds: ["No GenEds Fulfilled"],
 		Sections: [],
 	};
 

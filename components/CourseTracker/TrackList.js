@@ -3,7 +3,6 @@ import {
 	Text,
 	SafeAreaView,
 	RefreshControl,
-	StyleSheet,
 	View,
 	ScrollView,
 	AsyncStorage,

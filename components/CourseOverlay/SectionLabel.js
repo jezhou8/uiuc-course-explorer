@@ -1,11 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { SearchBar } from "react-native-elements";
-import { firestore } from "../../firebase/app";
-import {
-	getColorByGPA,
-	getColorByEnrollmentStatus,
-} from "../../utility/Colors";
+import { getColorByEnrollmentStatus } from "../../utility/Colors";
 import { parseStatusFromString } from "../../utility/Parser";
 
 export class SectionLabel extends React.Component {
@@ -13,6 +8,7 @@ export class SectionLabel extends React.Component {
 		const {
 			section,
 			trackSection,
+			untrackSection,
 			userToken,
 			courseNumber,
 			courseSubject,
@@ -23,6 +19,15 @@ export class SectionLabel extends React.Component {
 				section["EnrollmentStatus"]
 			),
 		};
+
+		const trackSectionInfo = {
+			Subject: courseSubject,
+			Number: courseNumber,
+			SectionNumber: section["SectionNumber"],
+			SectionId: section["SectionId"],
+			EnrollmentStatus: section["EnrollmentStatus"],
+		};
+
 		return (
 			<View
 				style={{
@@ -48,17 +53,7 @@ export class SectionLabel extends React.Component {
 					<TouchableOpacity
 						style={styles.trackButton}
 						onPress={() =>
-							trackSection(
-								{
-									Subject: courseSubject,
-									Number: courseNumber,
-									SectionNumber: section["SectionNumber"],
-									SectionId: section["SectionId"],
-									EnrollmentStatus:
-										section["EnrollmentStatus"],
-								},
-								userToken
-							)
+							trackSection(trackSectionInfo, userToken)
 						}
 					>
 						<Text style={{ fontSize: 16, color: "#477f91" }}>
@@ -66,11 +61,16 @@ export class SectionLabel extends React.Component {
 						</Text>
 					</TouchableOpacity>
 				) : (
-					<View style={styles.isTrackingButton}>
-						<Text style={{ fontSize: 16, color: "#BBB" }}>
-							Tracking
+					<TouchableOpacity
+						style={styles.isTrackingButton}
+						onPress={() =>
+							untrackSection(trackSectionInfo, userToken)
+						}
+					>
+						<Text style={{ fontSize: 16, color: "#F00" }}>
+							Untrack
 						</Text>
-					</View>
+					</TouchableOpacity>
 				)}
 			</View>
 		);
