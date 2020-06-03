@@ -157,9 +157,6 @@ const trackSectionSuccess = (section) => {
 	};
 };
 
-<<<<<<< HEAD
-const syncSectionsSuccess = (sections) => {
-=======
 const untrackSectionSuccess = section => {
 	let key = section["Subject"] + section["Number"] + section["SectionId"];
 	return {
