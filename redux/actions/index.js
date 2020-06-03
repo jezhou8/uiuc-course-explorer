@@ -21,7 +21,7 @@ import {
 } from "../../utility/Common";
 
 const YEAR = 2020;
-const SEASON = "fall";
+const SEASON = "summer";
 
 export function getCourse(title, number) {
 	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
@@ -81,7 +81,7 @@ export function syncSections(token) {
 }
 
 export function untrackSection(section, user) {
-	return dispatch => {
+	return (dispatch) => {
 		const updatedSections = firestoreRef.FieldValue.arrayRemove(section);
 		firestore
 			.collection("users")
@@ -89,7 +89,7 @@ export function untrackSection(section, user) {
 			.update({
 				TrackedSections: updatedSections,
 			})
-			.then(function() {
+			.then(function () {
 				// add to tracked
 				firestore
 					.collection("tracked")
@@ -157,7 +157,7 @@ const trackSectionSuccess = (section) => {
 	};
 };
 
-const untrackSectionSuccess = section => {
+const untrackSectionSuccess = (section) => {
 	let key = section["Subject"] + section["Number"] + section["SectionId"];
 	return {
 		type: UNTRACK_SECTION_SUCCESS,
@@ -165,8 +165,7 @@ const untrackSectionSuccess = section => {
 	};
 };
 
-const syncSectionsSuccess = sections => {
->>>>>>> 6a3f66d0df6f71aa8be13d6bb5161efba574b40f
+const syncSectionsSuccess = (sections) => {
 	let sectionsMap = {};
 
 	sections.forEach((section) => {
