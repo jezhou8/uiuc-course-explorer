@@ -7,7 +7,7 @@ import {
 	ScrollView,
 	AsyncStorage,
 } from "react-native";
-import { Notifications } from "expo";
+import * as Notifications from 'expo-notifications'
 import * as Permissions from "expo-permissions";
 import { firestore } from "../../firebase/app";
 import { getStatusBarHeight } from "react-native-safe-area-view";
@@ -65,7 +65,7 @@ export class TrackList extends React.Component {
 		let { user } = this.props;
 
 		return (
-			<View
+			<SafeAreaView
 				style={{
 					top: getStatusBarHeight(),
 					width: "100%",
@@ -124,7 +124,7 @@ export class TrackList extends React.Component {
 						})}
 					</ScrollView>
 				</SafeAreaView>
-			</View>
+			</SafeAreaView>
 		);
 	}
 }

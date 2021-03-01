@@ -3,6 +3,7 @@ import "firebase/firestore";
 import { firebaseConfig } from "./config.js";
 import { DEBUG_LOG } from "../utility/Common.js";
 
+
 DEBUG_LOG(firebaseConfig);
 let app = Firebase.initializeApp(firebaseConfig);
 export const firestore = app.firestore();

@@ -4,7 +4,7 @@ import { AsyncStorage } from "react-native";
 
 import persistStore from "./redux/store";
 import TabNavigator from "./components/Navigator/TabNavigator";
-import { AppLoading } from "expo";
+import AppLoading from 'expo-app-loading';
 import { PersistGate } from "redux-persist/integration/react";
 
 export default class App extends React.Component {

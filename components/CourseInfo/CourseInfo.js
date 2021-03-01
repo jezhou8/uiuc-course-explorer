@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 
 import { getStatusBarHeight } from "react-native-safe-area-view";
 import { getColorByEnrollmentStatus } from "../../utility/Colors";
@@ -15,7 +15,7 @@ export default class CoursesView extends React.Component {
 	render() {
 		const { displayedCourse } = this.props;
 		return (
-			<View style={styles.container}>
+			<SafeAreaView style={styles.container}>
 				{displayedCourse.error != null && (
 					<Text>
 						{displayedCourse.subject +
@@ -60,7 +60,7 @@ export default class CoursesView extends React.Component {
 							);
 						})}
 				</ScrollView>
-			</View>
+			</SafeAreaView>
 		);
 	}
 }
