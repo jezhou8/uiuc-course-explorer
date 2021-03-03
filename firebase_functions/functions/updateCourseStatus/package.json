@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "fast-xml-parser": "^3.14.0",
     "firebase-admin": "^8.7.0",
     "firebase-functions": "^3.3.0"
