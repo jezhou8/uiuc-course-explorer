@@ -5,14 +5,14 @@ import {
 	RefreshControl,
 	View,
 	ScrollView,
-	AsyncStorage,
 } from "react-native";
-import * as Notifications from 'expo-notifications'
+import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 import { firestore } from "../../firebase/app";
 import { getStatusBarHeight } from "react-native-safe-area-view";
 import { getTitleBySectionObject, DEBUG_LOG } from "../../utility/Common";
 import { getColorByEnrollmentStatus } from "../../utility/Colors";
+import Constants from "expo-constants";
 
 export class TrackList extends React.Component {
 	componentDidMount() {
@@ -25,40 +25,46 @@ export class TrackList extends React.Component {
 
 	registerForPushNotificationsAsync = async () => {
 		DEBUG_LOG("fetching token...");
-		const { status: existingStatus } = await Permissions.getAsync(
-			Permissions.NOTIFICATIONS
-		);
-		let finalStatus = existingStatus;
+		if (Constants.isDevice) {
+			const {
+				status: existingStatus,
+			} = await Notifications.getPermissionsAsync();
+			let finalStatus = existingStatus;
+			if (existingStatus !== "granted") {
+				const {
+					status,
+				} = await Notifications.requestPermissionsAsync();
+				finalStatus = status;
+			}
+			if (finalStatus !== "granted") {
+				alert("Failed to get push token for push notification!");
+				return;
+			}
+			const token = (await Notifications.getExpoPushTokenAsync()).data;
+			DEBUG_LOG("user notification token: " + token);
 
-		// only ask if permissions have not already been determined, because
-		// iOS won't necessarily prompt the user a second time.
-		if (existingStatus !== "granted") {
-			// Android remote notification permissions are granted during the app
-			// install, so this will only ask on iOS
-			const { status } = await Permissions.askAsync(
-				Permissions.NOTIFICATIONS
-			);
-			finalStatus = status;
+			// POST the token to your backend server from where you can retrieve it to send push notifications.
+			let date = Date(Date.now());
+			firestore
+				.collection("users")
+				.doc(token)
+				.set({ lastLoggedIn: date.toString() }, { merge: true })
+				.then(() => {
+					this.props.setNotificationToken(token);
+					this.props.syncSections(token);
+				});
+		} else {
+			alert("Must use physical device for Push Notifications");
 		}
 
-		// Stop here if the user did not grant permissions
-		if (finalStatus !== "granted") {
-			return;
-		}
-
-		// Get the token that uniquely identifies this device
-		let token = await Notifications.getExpoPushTokenAsync();
-
-		// POST the token to your backend server from where you can retrieve it to send push notifications.
-		let date = Date(Date.now());
-		firestore
-			.collection("users")
-			.doc(token)
-			.set({ lastLoggedIn: date.toString() }, { merge: true })
-			.then(() => {
-				this.props.setNotificationToken(token);
-				this.props.syncSections(token);
+		if (Platform.OS === "android") {
+			Notifications.setNotificationChannelAsync("default", {
+				name: "default",
+				importance: Notifications.AndroidImportance.MAX,
+				vibrationPattern: [0, 250, 250, 250],
+				lightColor: "#FF231F7C",
 			});
+		}
 	};
 
 	render() {
@@ -103,7 +109,7 @@ export class TrackList extends React.Component {
 							/>
 						}
 					>
-						{Object.keys(user["TrackedSections"]).map(key => {
+						{Object.keys(user["TrackedSections"]).map((key) => {
 							let section = user["TrackedSections"][key];
 							return (
 								<View

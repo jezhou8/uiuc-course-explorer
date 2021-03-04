@@ -24,7 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.uiucCoursesV2",
+      "bundleIdentifier": "com.example.uiuc-course-explorer",
       "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleSignIn": {
@@ -33,7 +33,7 @@
       }
     },
     "android": {
-      "package": "com.example.uiucCoursesV2",
+      "package": "com.example.uiuc_course_explorer",
       "googleServicesFile": "./google-services.json"
     }
   }
