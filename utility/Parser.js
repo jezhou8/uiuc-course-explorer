@@ -1,4 +1,5 @@
 import { parse } from "fast-xml-parser";
+import { DEBUG_LOG } from "./Common";
 
 export function parseJsonFromXml(courseXml) {
 	let courseJson = parse(courseXml, {
@@ -49,9 +50,9 @@ export function parseJsonFromXml(courseXml) {
 		let sections = courseJson["detailedSections"]["detailedSection"];
 		if (!Array.isArray(sections)) {
 			course["Sections"].push({
-				SectionId: section["sectionNumber"],
-				SectionNumber: section["id"],
-				EnrollmentStatus: section["enrollmentStatus"],
+				SectionId: sections["sectionNumber"],
+				SectionNumber: sections["id"],
+				EnrollmentStatus: sections["enrollmentStatus"],
 			});
 		} else {
 			sections.map(section => {
@@ -62,8 +63,8 @@ export function parseJsonFromXml(courseXml) {
 				});
 			});
 		}
+		DEBUG_LOG("Sections Available for Registering: \n" + course["Sections"]);
 	}
-
 	return course;
 }
 

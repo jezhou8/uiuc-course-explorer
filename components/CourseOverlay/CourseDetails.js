@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { SEASON, YEAR } from "../../utility/Consts";
 import { SectionLabel } from "./SectionLabel";
 
 export class CourseDetails extends React.Component {
@@ -27,7 +28,7 @@ export class CourseDetails extends React.Component {
 						{displayedCourse.subject +
 							" " +
 							displayedCourse.number +
-							" is not offered during Spring 2020."}
+							" is not offered during " + YEAR + " " + SEASON + "."}
 					</Text>
 				)}
 				{displayedCourse.Description != null && (
@@ -54,7 +55,7 @@ export class CourseDetails extends React.Component {
 							paddingLeft: 10,
 						}}
 					>
-						Sections available for Spring 2020
+						Sections available for {YEAR} {SEASON}
 					</Text>
 				)}
 				{displayedCourse.Description != null &&

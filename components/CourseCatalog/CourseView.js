@@ -179,7 +179,7 @@ export default class CoursesView extends React.Component {
 		const { search } = this.state;
 		let { displayedCourse, user, trackSection } = this.props;
 		return (
-			<View style={styles.container}>
+			<SafeAreaView style={styles.container}>
 				<Overlay
 					isVisible={this.state.overlayIsVisible}
 					overlayStyle={{ width: "90%", height: "90%", padding: 0 }}
@@ -207,7 +207,7 @@ export default class CoursesView extends React.Component {
 				>
 					{this.state.numCourses == 20 && this._listBuilder()}
 				</ScrollView>
-			</View>
+			</SafeAreaView>
 		);
 	}
 }
@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
 	container: {
 		width: "100%",
 		height: "100%",
-		top: getStatusBarHeight(),
 		backgroundColor: "#fff",
 		//alignItems: "center",
 	},

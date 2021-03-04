@@ -19,9 +19,9 @@ import {
 	getTitleBySectionObject,
 	DEBUG_LOG,
 } from "../../utility/Common";
-
-const YEAR = 2020;
-const SEASON = "summer";
+import {
+	YEAR, SEASON
+} from "../../utility/Consts";
 
 export function getCourse(title, number) {
 	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
@@ -188,7 +188,7 @@ const syncSectionsStarted = () => {
 const getCourseSuccess = (courseXml) => {
 	DEBUG_LOG("Got course!");
 
-	let courseJson = parseJsonFromXml(courseXml);
+	const courseJson = parseJsonFromXml(courseXml);
 
 	return {
 		type: GET_CURRENT_COURSE_SUCCESS,

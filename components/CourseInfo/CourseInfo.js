@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
 
 import { getStatusBarHeight } from "react-native-safe-area-view";
 import { getColorByEnrollmentStatus } from "../../utility/Colors";
+import { YEAR, SEASON } from "../../utility/Consts";
 
 export default class CoursesView extends React.Component {
 	state = {
@@ -21,7 +22,7 @@ export default class CoursesView extends React.Component {
 						{displayedCourse.subject +
 							" " +
 							displayedCourse.number +
-							" is not offered during Spring 2020."}
+							" is not offered during " + YEAR + " " + SEASON + "."}
 					</Text>
 				)}
 				{displayedCourse.Description != null && (
