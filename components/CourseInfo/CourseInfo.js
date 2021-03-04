@@ -69,7 +69,6 @@ export default class CoursesView extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		top: getStatusBarHeight(),
 		backgroundColor: "#ddd",
 	},
 	genEdContainer: {
