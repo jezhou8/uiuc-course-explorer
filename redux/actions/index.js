@@ -22,6 +22,7 @@ import {
 import {
 	YEAR, SEASON
 } from "../../utility/Consts";
+import { cancelAllScheduledNotificationsAsync } from "expo-notifications";
 
 export function getCourse(title, number) {
 	const url = `http://courses.illinois.edu/cisapp/explorer/schedule/${YEAR}/${SEASON}/${title}/${number}.xml?mode=cascade`;
@@ -53,6 +54,33 @@ export function getOldCourse(title, number) {
 	};
 }
 
+const getCourseSuccess = (courseXml) => {
+	DEBUG_LOG("Got course!");
+
+	const courseJson = parseJsonFromXml(courseXml);
+
+	return {
+		type: GET_CURRENT_COURSE_SUCCESS,
+		payload: {
+			...courseJson,
+		},
+	};
+};
+
+const getCourseStarted = () => ({
+	type: GET_CURRENT_COURSE,
+});
+
+const getCourseFailure = (error, subject, number) => ({
+	type: GET_CURRENT_COURSE_FAILED,
+	payload: {
+		error,
+		subject,
+		number,
+	},
+});
+
+
 export function syncSections(token) {
 	DEBUG_LOG("syncing...");
 	return (dispatch) => {
@@ -79,6 +107,29 @@ export function syncSections(token) {
 		}
 	};
 }
+
+const syncSectionsSuccess = (sections) => {
+	let sectionsMap = {};
+
+	sections.forEach((section) => {
+		let key = section["Subject"] + section["Number"] + section["SectionId"];
+		sectionsMap[key] = section;
+	});
+
+	return {
+		type: SYNC_SECTIONS_SUCCESS,
+		payload: sectionsMap,
+	};
+};
+
+const syncSectionsStarted = () => {
+	return {
+		type: SYNC_SECTIONS,
+	};
+};
+
+
+
 
 export function untrackSection(section, user) {
 	return (dispatch) => {
@@ -165,48 +216,4 @@ const untrackSectionSuccess = (section) => {
 	};
 };
 
-const syncSectionsSuccess = (sections) => {
-	let sectionsMap = {};
 
-	sections.forEach((section) => {
-		let key = section["Subject"] + section["Number"] + section["SectionId"];
-		sectionsMap[key] = section;
-	});
-
-	return {
-		type: SYNC_SECTIONS_SUCCESS,
-		payload: sectionsMap,
-	};
-};
-
-const syncSectionsStarted = () => {
-	return {
-		type: SYNC_SECTIONS,
-	};
-};
-
-const getCourseSuccess = (courseXml) => {
-	DEBUG_LOG("Got course!");
-
-	const courseJson = parseJsonFromXml(courseXml);
-
-	return {
-		type: GET_CURRENT_COURSE_SUCCESS,
-		payload: {
-			...courseJson,
-		},
-	};
-};
-
-const getCourseStarted = () => ({
-	type: GET_CURRENT_COURSE,
-});
-
-const getCourseFailure = (error, subject, number) => ({
-	type: GET_CURRENT_COURSE_FAILED,
-	payload: {
-		error,
-		subject,
-		number,
-	},
-});
